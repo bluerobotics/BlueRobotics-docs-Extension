@@ -1,0 +1,10 @@
+{
+    "name": "BlueOS documentation",
+    "description": "BlueOS documentation",
+    "icon": "mdi-book-open-page-variant",
+    "company": "Blue Robotics",
+    "version": "1.3.0",
+    "new_page": true,
+    "webpage": "https://github.com/bluerobotics/docs-blueos",
+    "api": "/v1.0/docs"
+}
