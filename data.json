@@ -1,0 +1,7 @@
+[
+    ["/docs/latest", "Latest", "dev"], 
+    ["/docs/stable", "1.3 (stable)", "stable"], 
+    ["/docs/1.2", "1.2", "recent"], 
+    ["/docs/1.1", "1.1", "old"], 
+    ["/docs/1.0", "1.0", "old"]
+]
