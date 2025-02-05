@@ -1,0 +1,35 @@
+name: Deploy BlueOS Extension Image
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  deploy-docker-image:
+    # set the agent to run on
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          pip install gitpython
+          wget -q -O - https://github.com/getzola/zola/releases/download/v0.19.2/zola-v0.19.2-x86_64-unknown-linux-gnu.tar.gz | tar xzf - -C /usr/local/bin
+          chmod +x /usr/local/bin/zola
+
+      - name: Populate docs
+        run: |
+          ./populate_docs.py
+
+      - name: Deploy BlueOS Extension
+        uses: BlueOS-community/Deploy-BlueOS-Extension@v1.2.0
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # image-name should not start with blueos- (see image-prefix)
+          image-name: 'docs'
+          skip-checkout: true
