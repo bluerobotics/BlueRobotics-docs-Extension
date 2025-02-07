@@ -28,7 +28,7 @@ COPY docs/stable/index.html /index.html
 COPY docs /docs
 WORKDIR /
 
-LABEL version="1.3.0"
+LABEL version="2025.2.7"
 LABEL permissions='{\
   "ExposedPorts": {\
     "80/tcp": {}\
@@ -47,6 +47,10 @@ LABEL authors='[\
     {\
         "name": "Patrick José Pereira",\
         "email": "patrickelectric@gmail.com"\
+    },\
+    {\
+        "name": "ES-Alexander",\
+        "email": "sandman.esalexander@gmail.com"\
     }\
 ]'
 LABEL company='{\
@@ -55,7 +59,7 @@ LABEL company='{\
     "email": "support@bluerobotics.com"\
 }'
 LABEL type="documentation"
-LABEL readme="https://raw.githubusercontent.com/bluerobotics/docs-blueos/master/README.md"
+LABEL readme="https://raw.githubusercontent.com/bluerobotics/BlueRobotics-docs-Extension/master/README.md"
 LABEL type="other"
 LABEL tags='[\
   "development",\
