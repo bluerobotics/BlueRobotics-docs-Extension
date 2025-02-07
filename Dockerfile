@@ -23,7 +23,7 @@ RUN echo "TARGETARCH: ${TARGETARCH}" && \
 
 RUN mkdir -p /docs
 COPY register_service /register_service
-COPY docs/stable/index.html /index.html
+COPY docs/BlueOS-stable/index.html /index.html
 
 COPY docs /docs
 WORKDIR /
