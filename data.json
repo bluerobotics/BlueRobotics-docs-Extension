@@ -1,7 +1,5 @@
 [
-    ["/docs/latest", "1.4 (latest)", "dev"],
-    ["/docs/stable", "1.3 (stable)", "stable"], 
-    ["/docs/1.2", "1.2", "recent"], 
-    ["/docs/1.1", "1.1", "old"], 
-    ["/docs/1.0", "1.0", "old"]
+    ["/docs/BlueOS-latest", "BlueOS 1.4 (latest)", "dev"],
+    ["/docs/BlueOS-stable", "BlueOS 1.3 (stable)", "stable"], 
+    ["/docs/Cockpit-latest", "Cockpit", "stable"] 
 ]

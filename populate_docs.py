@@ -10,39 +10,44 @@ def run_command(command, cwd=None):
         print(f"Error running command: {command}\n{result.stderr}")
     return result.stdout
 
-REPO_URL = "https://github.com/bluerobotics/BlueOS-docs"
-CLONE_DIR = "repository"
-
-# Clone the repository or open existing one
-if not os.path.exists(CLONE_DIR):
-    repo = git.Repo.clone_from(REPO_URL, CLONE_DIR)
-else:
-    repo = git.Repo(CLONE_DIR)
-    print("Repository already cloned.")
+ORG_URL = "https://github.com/bluerobotics"
+REPOS = {
+    "BlueOS-docs": ["latest", "stable"],
+    "Cockpit-docs": ["latest"],
+}
 
 if os.path.exists('docs'):
     print("Removing existing docs folder...")
     run_command("rm -rf docs/*")
 
-# Fetch all branches
-repo.remotes.origin.fetch()
-branches = [ref.name.split('/')[-1] for ref in repo.remotes.origin.refs if not ref.name.endswith('HEAD')]
+for repo_name, branches in REPOS.items():
+    if not os.path.exists(repo_name):
+        repo = git.Repo.clone_from(f"{ORG_URL}/{repo_name}", repo_name)
+    else:
+        repo = git.Repo(repo_name)
+        print("Repository already cloned.")
 
-# Run zola build on each branch
-for branch in branches:
-    print(f"\nSwitching to branch: {branch}")
-    repo.git.checkout(branch)
-    print("Initializing and updating submodules...")
-    repo.git.submodule('init')
-    repo.git.submodule('update')
-    run_command(f"zola build --base-url /docs/{branch}", cwd=CLONE_DIR)
-    print(f"Build completed for branch: {branch}\n")
+    # Run zola build on each branch
+    for branch in branches:
+        site_name = f"{repo_name.replace('-docs', '')}-{branch}"
+        print(f"\nSwitching to: {site_name}")
+        repo.git.checkout(branch)
+        print("Initializing and updating submodules...")
+        repo.git.submodule('init')
+        repo.git.submodule('update')
+        build_command = "zola "
+        if os.path.exists(os.path.join(repo_name, "config.extension.toml")):
+            build_command += "--config config.extension.toml build"
+        else:
+            build_command += f"build --base-url /docs/{site_name}"
+        run_command(build_command, cwd=repo_name)
+        print(f"Build completed for: {site_name}\n")
 
-    # Create branch directory in docs and move public folder content there
-    branch_dir = os.path.join('docs', branch)
-    if not os.path.exists(branch_dir):
-        os.makedirs(branch_dir)
-    run_command(f"mv {CLONE_DIR}/public/* {branch_dir}/")
+        # Create branch directory in docs and move public folder content there
+        branch_dir = os.path.join('docs', site_name)
+        if not os.path.exists(branch_dir):
+            os.makedirs(branch_dir)
+        run_command(f"mv {repo_name}/public/* {branch_dir}/")
 
 # Copy data.json to docs directory if it exists in the repository
 if os.path.exists("data.json"):
