@@ -59,7 +59,7 @@ LABEL company='{\
     "email": "support@bluerobotics.com"\
 }'
 LABEL type="documentation"
-LABEL readme="https://raw.githubusercontent.com/bluerobotics/BlueRobotics-docs-Extension/master/README.md"
+LABEL readme="https://raw.githubusercontent.com/bluerobotics/BlueRobotics-docs-Extension/master/page.md"
 LABEL type="other"
 LABEL tags='[\
   "development",\
