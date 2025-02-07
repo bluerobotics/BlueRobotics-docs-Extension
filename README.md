@@ -1,6 +1,6 @@
-# BlueOS documentation extension
+# Blue Robotics documentation extension
 
-Provides BlueOS documentation as a BlueOS extension.
+Provides documentation for Blue Robotics software applications in a BlueOS extension.
 
 ## Updating versions
 
