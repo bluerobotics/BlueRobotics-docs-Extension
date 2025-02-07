@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./preview.png">
+  <img style="width:95%;" src="./preview.png">
 </div>
 
 A local, offline copy of the latest Blue Robotics software documentation.
