@@ -25,7 +25,7 @@ jobs:
           ./populate_docs.py
 
       - name: Deploy BlueOS Extension
-        uses: BlueOS-community/Deploy-BlueOS-Extension@v1.2.0
+        uses: BlueOS-community/Deploy-BlueOS-Extension@v1
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-password: ${{ secrets.DOCKER_PASSWORD }}
