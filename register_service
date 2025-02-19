@@ -3,7 +3,7 @@
     "description": "Blue Robotics documentation",
     "icon": "mdi-book-open-page-variant",
     "company": "Blue Robotics",
-    "version": "2025.2.7",
+    "version": "2025.2.20",
     "new_page": true,
     "webpage": "https://github.com/bluerobotics/BlueRobotics-docs-Extension",
     "api": "/v1.0/docs"
