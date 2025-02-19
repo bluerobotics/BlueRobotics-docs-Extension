@@ -1,2 +1,5 @@
 # docs repositories
 *-docs/
+
+# macos filesystem index
+.DS_Store
