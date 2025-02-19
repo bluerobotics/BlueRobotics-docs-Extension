@@ -1,22 +1,75 @@
 name: Deploy BlueOS Extension Image
 
 on:
-  push:
+  schedule:
+    # Run every day at 11:00 UTC
+    - cron:  '0 11 * * *'
+  # The workflow can update the repo, so don't run on push, but do allow running manually
   workflow_dispatch:
 
 jobs:
-  deploy-docker-image:
-    # set the agent to run on
+  sync:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    outputs:
+      commit: ${{ steps.commit.outputs.updated }}
+      tag: ${{ steps.version.outputs.tag }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Git submodule update
+      run: |
+        git submodule update --init --recursive --remote
+
+    - name: Commit update
+      id: commit
+      run: |
+        git config --global user.name 'Git bot'
+        git config --global user.email 'bot@noreply.github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git commit -am "submodules: Updated references" && git push && echo "updated=true" >> "$GITHUB_OUTPUT" ||
+        echo "No changes to commit" && echo "updated=false" >> "$GITHUB_OUTPUT"
+
+    - name: Update version
+      id: version
+      if: ${{ steps.commit.outputs.updated == 'true' }}
+      run: |
+        ./update_version.py >> "$GITHUB_OUTPUT"
+
+    - name: Commit version
+      if: steps.commit.outputs.updated == 'true'
+      run: |
+        git config --global user.name 'Git bot'
+        git config --global user.email 'bot@noreply.github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git commit -am "Dockerfile: updated Extension version" && git push || echo "Daily version already released"
+
+  deploy-docker-image:
+    # only deploy an update if there are new changes, or the workflow is running manually
+    needs: sync
+    if: ${{ needs.sync.outputs.commit == 'true' || github.event_name == 'workflow_dispatch' }}
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          submodules: 'recursive'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: |
-          pip install gitpython
           wget -q -O - https://github.com/getzola/zola/releases/download/v0.19.2/zola-v0.19.2-x86_64-unknown-linux-gnu.tar.gz | tar xzf - -C /usr/local/bin
           chmod +x /usr/local/bin/zola
 
@@ -32,4 +85,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # image-name should not start with blueos- (see image-prefix)
           image-name: 'docs'
+          image-tag: ${{ needs.sync.outputs.tag }}
           skip-checkout: true
