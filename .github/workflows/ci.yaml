@@ -87,3 +87,10 @@ jobs:
           image-name: 'docs'
           image-tag: ${{ needs.sync.outputs.tag }}
           skip-checkout: true
+
+      - name: Build and Publish Extension in BlueOS CLoud
+        uses: bluerobotics/blueos-cloud-action@0.0.3
+        with:
+          BCLOUD_PAT: ${{secrets.BCLOUD_PAT}}
+          PLATFORMS: linux/arm/v7,linux/arm64,linux/amd64
+          EXTENSION: 96882a67-44c0-4489-aea7-9953362fec37
